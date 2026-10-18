@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Точка входа эмулятора командной строки."""
 from shellemu.cli import main
 

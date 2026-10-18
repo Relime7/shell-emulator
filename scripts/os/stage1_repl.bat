@@ -8,21 +8,21 @@ if not defined PY set PY=python
 
 echo.
 echo ===== Stage 1: dialog (quotes, parse errors, unknown command) =====
-%PY% main.py < scripts\os\input_stage1_a.txt
+%PY% src\main.py < scripts\os\input_stage1_a.txt
 echo [exit code: %errorlevel%]
 
 echo.
 echo ===== Stage 1: empty lines, comments, exit with code =====
-%PY% main.py < scripts\os\input_stage1_b.txt
+%PY% src\main.py < scripts\os\input_stage1_b.txt
 echo [exit code: %errorlevel%]
 
 echo.
 echo ===== Stage 1: end of input (Ctrl+Z / EOF) =====
-%PY% main.py < scripts\os\input_stage1_c.txt
+%PY% src\main.py < scripts\os\input_stage1_c.txt
 echo [exit code: %errorlevel%]
 
 echo.
 echo ===== Stage 1: exit with bad argument =====
-%PY% main.py < scripts\os\input_stage1_d.txt
+%PY% src\main.py < scripts\os\input_stage1_d.txt
 echo [exit code: %errorlevel%]
 exit /b 0
