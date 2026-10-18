@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Точка входа эмулятора командной строки."""
-from shellemu.shell import Shell
+from shellemu.cli import main
 
 if __name__ == "__main__":
-    raise SystemExit(Shell().repl())
+    raise SystemExit(main())

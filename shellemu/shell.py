@@ -52,6 +52,37 @@ class Shell:
             print(e)
             self.status = 2
 
+    def run_script(self, path: str) -> int | None:
+        """Выполнить стартовый скрипт, показывая и ввод, и вывод.
+
+        Возвращает код выхода, если скрипт вызвал exit, иначе None.
+        """
+        try:
+            with open(path, "r", encoding="utf-8-sig") as f:
+                lines = f.read().splitlines()
+        except OSError as e:
+            print(f"emulator: cannot read script '{path}': {e.strerror}")
+            self.status = 2
+            return None
+        except UnicodeDecodeError:
+            print(f"emulator: script '{path}' is not valid UTF-8")
+            self.status = 2
+            return None
+
+        for raw in lines:
+            line = raw.rstrip()
+            if not line.strip():
+                continue
+            if line.lstrip().startswith("#"):
+                print(line)               # комментарий показываем как есть
+                continue
+            print(f"{self.prompt()}{line}")  # имитация ввода пользователя
+            try:
+                self.execute(line)
+            except ShellExit as e:
+                return e.code
+        return None
+
     def repl(self) -> int:
         interactive = sys.stdin.isatty()
         while True:

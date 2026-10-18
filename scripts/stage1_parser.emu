@@ -1,0 +1,19 @@
+# === Этап 1: парсер, кавычки, ошибки (VFS: vfs/deep.json) ===
+ls
+ls "my docs"
+ls 'my docs'
+ls my\ docs
+ls "my docs" readme.txt
+ls "my"" docs"
+ls "" x
+# пустой аргумент и несуществующие файлы
+ls "no such file" 'another one'
+# незакрытые кавычки
+ls "unterminated
+ls 'unterminated
+ls trailing\
+# неизвестная команда
+frobnicate a "b c"
+# команда cd с аргументами в кавычках
+cd "my docs"
+cd /
