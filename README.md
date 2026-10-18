@@ -9,7 +9,14 @@
 ## Запуск
 
 ```
-python main.py [--vfs ПУТЬ] [--script ПУТЬ] [--config ПУТЬ]
+python src/main.py [--vfs ПУТЬ] [--script ПУТЬ] [--config ПУТЬ]
+```
+
+Либо через скрипты запуска (принимают те же параметры и работают из любой папки):
+
+```
+./run.sh [--vfs ПУТЬ] [--script ПУТЬ] [--config ПУТЬ]      # Linux / macOS
+run.bat [--vfs ПУТЬ] [--script ПУТЬ] [--config ПУТЬ]         # Windows
 ```
 
 В Windows вместо `python` может понадобиться `py -3` (см. раздел «Windows»).
@@ -26,19 +33,21 @@ python main.py [--vfs ПУТЬ] [--script ПУТЬ] [--config ПУТЬ]
 ## Структура репозитория
 
 ```
-main.py                    точка входа
-shellemu/
-  parser.py                собственный токенизатор строки (кавычки, экранирование, комментарии)
-  shell.py                 приглашение, REPL, выполнение стартового скрипта
-  commands.py              команды: заглушки ls и cd, команда exit
-  vfs.py                   виртуальная файловая система в памяти, загрузка из JSON
-  config.py                параметры запуска: командная строка + JSON-конфиг
-  cli.py                   разбор аргументов, отладочный вывод, запуск
+run.sh, run.bat            скрипты запуска эмулятора (Linux/macOS и Windows)
+src/
+  main.py                  точка входа
+  shellemu/
+    parser.py              собственный токенизатор (кавычки, экранирование, комментарии)
+    shell.py               приглашение, REPL, выполнение стартового скрипта
+    commands.py            команды: заглушки ls и cd, команда exit
+    vfs.py                 виртуальная файловая система в памяти, загрузка из JSON
+    config.py              параметры запуска: командная строка + JSON-конфиг
+    cli.py                 разбор аргументов, отладочный вывод, запуск
 vfs/                       примеры VFS: minimal, files, deep; vfs/broken/ - некорректные описания
 config/                    примеры конфигурационных файлов (в том числе с ошибками)
 scripts/*.emu              стартовые скрипты эмулятора (комментарии начинаются с #)
-scripts/os/*.sh, *.bat     скрипты реальной ОС (Linux/macOS и Windows), вызывающие эмулятор
-tests/test_emulator.py     модульные тесты
+scripts/os/*.sh, *.bat     скрипты реальной ОС (Linux/macOS, Windows), вызывающие эмулятор
+tests/                     модульные тесты (python -m unittest discover)
 ```
 
 ## Этап 1. REPL
@@ -111,7 +120,7 @@ user@host:/$ exit
 Только конфигурационный файл:
 
 ```
-$ python main.py --config config/default.json
+$ python src/main.py --config config/default.json
 [debug] Параметры запуска эмулятора:
 [debug]   config = 'config/default.json'  (источник: командная строка)
 [debug]   vfs    = 'vfs/files.json'  (источник: конфигурационный файл)
@@ -132,7 +141,7 @@ user@host:/$ exit
 Параметр командной строки перекрывает файл (`--vfs vfs/minimal.json` вместо `vfs/files.json`):
 
 ```
-$ python main.py --config config/default.json --vfs vfs/minimal.json
+$ python src/main.py --config config/default.json --vfs vfs/minimal.json
 [debug] Параметры запуска эмулятора:
 [debug]   config = 'config/default.json'  (источник: командная строка)
 [debug]   vfs    = 'vfs/minimal.json'  (источник: командная строка)
@@ -153,11 +162,11 @@ user@host:/$ exit
 Ошибки конфигурации (код возврата 2):
 
 ```
-$ python main.py --config config/broken.json
+$ python src/main.py --config config/broken.json
 emulator: ошибка конфигурации: конфигурационный файл 'config/broken.json' - некорректный JSON: Expecting value: line 2 column 1 (char 48)
-$ python main.py --config config/no_such.json
+$ python src/main.py --config config/no_such.json
 emulator: ошибка конфигурации: не удалось прочитать конфигурационный файл 'config/no_such.json': No such file or directory
-$ python main.py --config config/bad_types.json
+$ python src/main.py --config config/bad_types.json
 emulator: ошибка конфигурации: конфигурационный файл 'config/bad_types.json': поле 'vfs_path' должно быть строкой
 ```
 
@@ -188,21 +197,21 @@ emulator: ошибка конфигурации: конфигурационны�
 Три варианта VFS из репозитория (минимальная, несколько файлов, 6 уровней вложенности):
 
 ```
-$ python main.py --vfs vfs/minimal.json
+$ python src/main.py --vfs vfs/minimal.json
 [debug]   config = <не задан>  (источник: не задан)
 [debug]   vfs    = 'vfs/minimal.json'  (источник: командная строка)
 [debug]   script = <не задан>  (источник: не задан)
 [debug] VFS загружена: каталогов 1, файлов 0, байт данных 0
 user@host:/$ exit
 
-$ python main.py --vfs vfs/files.json
+$ python src/main.py --vfs vfs/files.json
 [debug]   config = <не задан>  (источник: не задан)
 [debug]   vfs    = 'vfs/files.json'  (источник: командная строка)
 [debug]   script = <не задан>  (источник: не задан)
 [debug] VFS загружена: каталогов 2, файлов 5, байт данных 81
 user@host:/$ exit
 
-$ python main.py --vfs vfs/deep.json
+$ python src/main.py --vfs vfs/deep.json
 [debug]   config = <не задан>  (источник: не задан)
 [debug]   vfs    = 'vfs/deep.json'  (источник: командная строка)
 [debug]   script = <не задан>  (источник: не задан)
@@ -213,15 +222,15 @@ user@host:/$ exit
 Ошибки загрузки описания VFS (код возврата 2):
 
 ```
-$ python main.py --vfs vfs/broken/bad_base64.json
+$ python src/main.py --vfs vfs/broken/bad_base64.json
 emulator: ошибка VFS: /a: содержимое не является корректным base64
-$ python main.py --vfs vfs/broken/bad_type.json
+$ python src/main.py --vfs vfs/broken/bad_type.json
 emulator: ошибка VFS: /a: неизвестный тип узла 'symlink' (ожидается 'dir' или 'file')
-$ python main.py --vfs vfs/broken/bad_mode.json
+$ python src/main.py --vfs vfs/broken/bad_mode.json
 emulator: ошибка VFS: /: некорректное поле 'mode' '999' (ожидается восьмеричная строка, например "644")
-$ python main.py --vfs vfs/broken/invalid_json.json
+$ python src/main.py --vfs vfs/broken/invalid_json.json
 emulator: ошибка VFS: VFS 'vfs/broken/invalid_json.json' - некорректный JSON: Expecting value: line 2 column 1 (char 30)
-$ python main.py --vfs vfs/broken/root_is_file.json
+$ python src/main.py --vfs vfs/broken/root_is_file.json
 emulator: ошибка VFS: корень VFS должен быть каталогом
 ```
 
@@ -235,11 +244,11 @@ emulator: ошибка VFS: корень VFS должен быть катало�
 ## Тестирование
 
 ```
-python -m unittest discover -s tests
+python -m unittest discover
 ```
 ```
 ----------------------------------------------------------------------
-Ran 12 tests in 0.001s
+Ran 13 tests in 0.001s
 
 OK
 ```
@@ -255,7 +264,7 @@ OK
 Стартовый скрипт эмулятора можно запускать и напрямую:
 
 ```
-python main.py --vfs vfs/deep.json --script scripts/full_test.emu
+python src/main.py --vfs vfs/deep.json --script scripts/full_test.emu
 ```
 
 Начало его вывода:
@@ -283,8 +292,8 @@ user@host:/$ ls "" x
 
 В Windows команда `python3` часто оказывается заглушкой Microsoft Store. Используйте
 `python` или `py -3`; для `.bat`-скриптов интерпретатор можно задать так: `set PY=py -3`.
-Скрипты `.bat` сами включают кодировку UTF-8 (`chcp 65001`). Запускать эмулятор нужно из
-папки репозитория, потому что пути к `vfs/` и `scripts/` указываются относительно неё.
+Скрипты `.bat` сами включают кодировку UTF-8 (`chcp 65001`). Пути к `vfs/` и `scripts/` в примерах указываются относительно папки репозитория,
+поэтому команды удобнее запускать из неё.
 Конец ввода в Windows - Ctrl+Z, затем Enter.
 
 ## История коммитов
@@ -297,4 +306,7 @@ feat(config): add CLI/JSON configuration with debug output and startup scripts
 feat(vfs): add in-memory virtual file system loaded from JSON
 test: add unit tests for parser, config, VFS and shell
 docs: add README with usage and demonstrations
+refactor: move sources to src/ and fix style issues
+build: add run.sh and run.bat launch scripts
+docs: update README for src layout and launch scripts
 ```
