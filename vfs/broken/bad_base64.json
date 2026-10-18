@@ -1,0 +1,1 @@
+{ "type": "dir", "children": { "a": { "type": "file", "encoding": "base64", "content": "!!!not base64!!!" } } }

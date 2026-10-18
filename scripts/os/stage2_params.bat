@@ -30,6 +30,8 @@ call :section "Error: invalid JSON in config"
 call :run %PY% main.py --config config/broken.json
 call :section "Error: wrong field type in config"
 call :run %PY% main.py --config config/bad_types.json
+call :section "Error: config points to missing VFS"
+call :run %PY% main.py --config config/missing_vfs.json
 call :section "Error: config points to missing script (emulator keeps running)"
 call :run %PY% main.py --config config/missing_script.json
 call :section "Error: unknown command-line option"

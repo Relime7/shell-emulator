@@ -1,4 +1,4 @@
-"""Оболочка: приглашение и REPL."""
+"""Оболочка: приглашение, REPL и выполнение стартового скрипта."""
 from __future__ import annotations
 
 import getpass
@@ -12,6 +12,7 @@ except ImportError:
 
 from .commands import COMMANDS, ShellExit, UsageError
 from .parser import ParseError, tokenize
+from .vfs import VFS
 
 
 def _real_user() -> str:
@@ -22,13 +23,15 @@ def _real_user() -> str:
 
 
 class Shell:
-    def __init__(self):
+    def __init__(self, vfs: VFS):
+        self.vfs = vfs
         self.user = _real_user()
         self.host = socket.gethostname() or "localhost"
         self.status = 0
+        self.oldpwd: str | None = None
 
     def prompt(self) -> str:
-        return f"{self.user}@{self.host}:~$ "
+        return f"{self.user}@{self.host}:{self.vfs.cwd}$ "
 
     def execute(self, line: str) -> None:
         """Выполнить одну строку. Ошибки печатаются, а не бросаются."""

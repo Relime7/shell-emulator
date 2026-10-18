@@ -1,0 +1,37 @@
+{
+  "type": "dir",
+  "children": {
+    "readme.txt": { "type": "file", "content": "Hello from VFS\n" },
+    "my docs": { "type": "dir", "children": {
+      "report final.txt": { "type": "file", "content": "Quarterly report\n" }
+    }},
+    "home": { "type": "dir", "children": {
+      "user": { "type": "dir", "children": {
+        ".bashrc": { "type": "file", "content": "export PS1='$ '\n" },
+        "docs": { "type": "dir", "children": {} },
+        "projects": { "type": "dir", "children": {
+          "notes.txt": { "type": "file", "content": "todo: finish emulator\n" },
+          "emulator": { "type": "dir", "children": {
+            "README.md": { "type": "file", "content": "# Emulator\n" },
+            "data.bin": { "type": "file", "encoding": "base64", "content": "AAECAwQFBgcICQ==" },
+            "src": { "type": "dir", "children": {
+              "main.py": { "type": "file", "content": "print('hi')\n", "mode": "755" },
+              "utils.py": { "type": "file", "content": "# utils\n" }
+            }}
+          }}
+        }}
+      }}
+    }},
+    "etc": { "type": "dir", "children": {
+      "hostname": { "type": "file", "content": "vfs-host\n" },
+      "passwd": { "type": "file", "content": "root:x:0:0\n" }
+    }},
+    "tmp": { "type": "dir", "children": {} },
+    "empty_dir": { "type": "dir", "children": {} },
+    "private": { "type": "dir", "mode": "000", "children": {
+      "secret.txt": { "type": "file", "content": "top secret\n" }
+    }},
+    "locked.txt": { "type": "file", "content": "no access\n", "mode": "000" },
+    "readonly.txt": { "type": "file", "content": "read only\n", "mode": "444" }
+  }
+}

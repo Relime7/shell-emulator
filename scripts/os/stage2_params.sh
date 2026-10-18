@@ -38,6 +38,8 @@ run $PY main.py --config config/broken.json
 section "Ошибки: неверный тип поля в конфиге"
 run $PY main.py --config config/bad_types.json
 
+section "Ошибки: конфиг ссылается на несуществующую VFS"
+run $PY main.py --config config/missing_vfs.json
 
 section "Ошибки: конфиг ссылается на несуществующий скрипт (эмулятор продолжает работу)"
 run $PY main.py --config config/missing_script.json

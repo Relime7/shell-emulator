@@ -1,0 +1,15 @@
+{
+  "type": "dir",
+  "children": {
+    "readme.txt": { "type": "file", "content": "Hello from VFS\n" },
+    "notes.txt": { "type": "file", "content": "Заметки на русском\n" },
+    ".hidden": { "type": "file", "content": "secret", "mode": "600" },
+    "logo.png": { "type": "file", "encoding": "base64", "content": "iVBORw0KGgo=" },
+    "my docs": {
+      "type": "dir",
+      "children": {
+        "report final.txt": { "type": "file", "content": "Quarterly report\n" }
+      }
+    }
+  }
+}
