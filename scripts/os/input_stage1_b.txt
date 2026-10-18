@@ -1,0 +1,8 @@
+ls "my docs" readme.txt
+ls my\ docs "my"" docs"
+
+   
+# комментарий
+ls   # комментарий в конце строки
+cd "my docs"
+exit 7

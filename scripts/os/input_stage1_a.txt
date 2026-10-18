@@ -1,0 +1,9 @@
+ls
+cd
+cd "dir with spaces"
+ls -l "a b" 'c d' e\ f
+ls "" x
+unknown arg "x y"
+ls "unterminated
+ls 'unterminated
+exit
