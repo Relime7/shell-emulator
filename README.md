@@ -53,7 +53,8 @@ tests/                     модульные тесты (python -m unittest dis
 ## Этап 1. REPL
 
 - Консольное приложение. Приглашение строится из данных реальной ОС:
-  `имя_пользователя@имя_хоста:текущий_каталог$` (`getpass.getuser()`, `socket.gethostname()`).
+  `имя_пользователя@имя_хоста:~$` (`getpass.getuser()`, `socket.gethostname()`);
+домашний каталог VFS (`/`) показывается как `~`, остальные - полным путём.
 - Парсер (`shellemu/parser.py`) написан вручную и ведёт себя как в bash:
 
 | Конструкция | Пример | Результат |
@@ -82,23 +83,23 @@ tests/                     модульные тесты (python -m unittest dis
 [debug]   vfs    = <не задан>  (источник: не задан)
 [debug]   script = <не задан>  (источник: не задан)
 [debug] VFS не задана - используется пустая файловая система
-user@host:/$ ls
+user@host:~$ ls
 ls (stub): args=[]
-user@host:/$ cd
+user@host:~$ cd
 cd (stub): args=[]
-user@host:/$ cd "dir with spaces"
+user@host:~$ cd "dir with spaces"
 cd (stub): args=['dir with spaces']
-user@host:/$ ls -l "a b" 'c d' e\ f
+user@host:~$ ls -l "a b" 'c d' e\ f
 ls (stub): args=['-l', 'a b', 'c d', 'e f']
-user@host:/$ ls "" x
+user@host:~$ ls "" x
 ls (stub): args=['', 'x']
-user@host:/$ unknown arg "x y"
+user@host:~$ unknown arg "x y"
 unknown: command not found
-user@host:/$ ls "unterminated
+user@host:~$ ls "unterminated
 emulator: syntax error: unterminated double quote
-user@host:/$ ls 'unterminated
+user@host:~$ ls 'unterminated
 emulator: syntax error: unterminated single quote
-user@host:/$ exit
+user@host:~$ exit
 ```
 
 Демонстрация целиком: `bash scripts/os/stage1_repl.sh` или `scripts\os\stage1_repl.bat`.
@@ -127,15 +128,15 @@ $ python src/main.py --config config/default.json
 [debug]   script = 'scripts/hello.emu'  (источник: конфигурационный файл)
 [debug] VFS загружена: каталогов 2, файлов 5, байт данных 81
 # Простой стартовый скрипт: комментарии, пустые строки и команды
-user@host:/$ ls            # комментарий в конце строки
+user@host:~$ ls            # комментарий в конце строки
 ls (stub): args=[]
-user@host:/$ ls -l readme.txt "my docs"
+user@host:~$ ls -l readme.txt "my docs"
 ls (stub): args=['-l', 'readme.txt', 'my docs']
-user@host:/$ cd "my docs"
+user@host:~$ cd "my docs"
 cd (stub): args=['my docs']
-user@host:/$ cd ..
+user@host:~$ cd ..
 cd (stub): args=['..']
-user@host:/$ exit
+user@host:~$ exit
 ```
 
 Параметр командной строки перекрывает файл (`--vfs vfs/minimal.json` вместо `vfs/files.json`):
@@ -148,15 +149,15 @@ $ python src/main.py --config config/default.json --vfs vfs/minimal.json
 [debug]   script = 'scripts/hello.emu'  (источник: конфигурационный файл)
 [debug] VFS загружена: каталогов 1, файлов 0, байт данных 0
 # Простой стартовый скрипт: комментарии, пустые строки и команды
-user@host:/$ ls            # комментарий в конце строки
+user@host:~$ ls            # комментарий в конце строки
 ls (stub): args=[]
-user@host:/$ ls -l readme.txt "my docs"
+user@host:~$ ls -l readme.txt "my docs"
 ls (stub): args=['-l', 'readme.txt', 'my docs']
-user@host:/$ cd "my docs"
+user@host:~$ cd "my docs"
 cd (stub): args=['my docs']
-user@host:/$ cd ..
+user@host:~$ cd ..
 cd (stub): args=['..']
-user@host:/$ exit
+user@host:~$ exit
 ```
 
 Ошибки конфигурации (код возврата 2):
@@ -202,21 +203,21 @@ $ python src/main.py --vfs vfs/minimal.json
 [debug]   vfs    = 'vfs/minimal.json'  (источник: командная строка)
 [debug]   script = <не задан>  (источник: не задан)
 [debug] VFS загружена: каталогов 1, файлов 0, байт данных 0
-user@host:/$ exit
+user@host:~$ exit
 
 $ python src/main.py --vfs vfs/files.json
 [debug]   config = <не задан>  (источник: не задан)
 [debug]   vfs    = 'vfs/files.json'  (источник: командная строка)
 [debug]   script = <не задан>  (источник: не задан)
 [debug] VFS загружена: каталогов 2, файлов 5, байт данных 81
-user@host:/$ exit
+user@host:~$ exit
 
 $ python src/main.py --vfs vfs/deep.json
 [debug]   config = <не задан>  (источник: не задан)
 [debug]   vfs    = 'vfs/deep.json'  (источник: командная строка)
 [debug]   script = <не задан>  (источник: не задан)
 [debug] VFS загружена: каталогов 12, файлов 13, байт данных 162
-user@host:/$ exit
+user@host:~$ exit
 ```
 
 Ошибки загрузки описания VFS (код возврата 2):
@@ -273,19 +274,19 @@ python src/main.py --vfs vfs/deep.json --script scripts/full_test.emu
 [debug] VFS загружена: каталогов 12, файлов 13, байт данных 162
 # ###################### ТЕСТ ВСЕХ КОМАНД (этапы 1-3), VFS: vfs/deep.json ######################
 # === Этап 1: парсер, кавычки, ошибки (VFS: vfs/deep.json) ===
-user@host:/$ ls
+user@host:~$ ls
 ls (stub): args=[]
-user@host:/$ ls "my docs"
+user@host:~$ ls "my docs"
 ls (stub): args=['my docs']
-user@host:/$ ls 'my docs'
+user@host:~$ ls 'my docs'
 ls (stub): args=['my docs']
-user@host:/$ ls my\ docs
+user@host:~$ ls my\ docs
 ls (stub): args=['my docs']
-user@host:/$ ls "my docs" readme.txt
+user@host:~$ ls "my docs" readme.txt
 ls (stub): args=['my docs', 'readme.txt']
-user@host:/$ ls "my"" docs"
+user@host:~$ ls "my"" docs"
 ls (stub): args=['my docs']
-user@host:/$ ls "" x
+user@host:~$ ls "" x
 ```
 
 ## Windows

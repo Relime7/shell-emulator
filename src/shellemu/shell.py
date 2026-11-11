@@ -38,8 +38,14 @@ class Shell:
         self.oldpwd: str | None = None
 
     def prompt(self) -> str:
-        """Приглашение вида имя@хост:каталог$ из данных реальной ОС."""
-        return f"{self.user}@{self.host}:{self.vfs.cwd}$ "
+        """Приглашение вида имя@хост:каталог$ из данных реальной ОС.
+
+        Домашний каталог VFS показывается как ``~``, как в обычной
+        UNIX-оболочке: ``username@hostname:~$``.
+        """
+        cwd = self.vfs.cwd
+        shown = "~" if cwd == self.vfs.home else cwd
+        return f"{self.user}@{self.host}:{shown}$ "
 
     def execute(self, line: str) -> None:
         """Выполнить одну строку. Ошибки печатаются, а не бросаются."""

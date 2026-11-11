@@ -112,6 +112,12 @@ class ShellTests(unittest.TestCase):
             "ls (stub): args=['-l', 'a b']\n")
         self.assertEqual(run_line(shell, "cd x"), "cd (stub): args=['x']\n")
 
+    def test_prompt_uses_real_os_data(self):
+        """Приглашение: имя@хост:~$ из данных реальной ОС."""
+        shell = self.make_shell()
+        self.assertEqual(
+            shell.prompt(), f"{shell.user}@{shell.host}:~$ ")
+
     def test_unknown_command(self):
         """Неизвестная команда даёт код 127."""
         shell = self.make_shell()

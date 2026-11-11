@@ -26,6 +26,7 @@ import time
 from dataclasses import dataclass, field
 
 DIR_SIZE = 4096
+HOME = "/"
 MODE_RE = re.compile(r"[0-7]{3,4}")
 
 
@@ -142,7 +143,8 @@ class VFS:
 
     def __init__(self, root: Node):
         self.root = root
-        self.cwd = "/"
+        self.home = HOME
+        self.cwd = HOME
 
     @classmethod
     def empty(cls) -> "VFS":
